@@ -6,7 +6,7 @@
 /*   By: ikawamuk <ikawamuk@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/30 00:17:42 by ikawamuk          #+#    #+#             */
-/*   Updated: 2025/09/08 15:12:19 by ikawamuk         ###   ########.fr       */
+/*   Updated: 2025/09/08 19:17:42 by ikawamuk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@ typedef struct s_simple_cmd		t_simple_cmd;
 struct s_simple_cmd
 {
 	char			**argv;
-	t_redir_list	*redir;
+	t_redir_list	*redir_list;
 };
 
 struct s_command

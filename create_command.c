@@ -6,12 +6,13 @@
 /*   By: ikawamuk <ikawamuk@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/08 18:05:41 by ikawamuk          #+#    #+#             */
-/*   Updated: 2025/09/08 18:33:48 by ikawamuk         ###   ########.fr       */
+/*   Updated: 2025/09/08 19:45:26 by ikawamuk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <stdlib.h>
 #include <string.h>
+#include <stdio.h>
 #include "command.h"
 #include "parse.h"
 
@@ -19,6 +20,7 @@ size_t	count_word_list_node(t_word_list *list)
 {
 	size_t	count;
 
+	
 	count = 0;
 	while (list)
 	{
@@ -56,7 +58,7 @@ void **free_2darr(void **arr)
 int	error_create_argv(t_simple_cmd *cmd, t_word_list *list)
 {
 	list = free_word_list(list);
-	cmd->argv = free_2darr((void **)cmd->argv);
+	cmd->argv = (char **)free_2darr((void **)cmd->argv);
 	return (ERROR);
 }
 
@@ -69,6 +71,7 @@ int create_argv(t_simple_cmd *cmd, t_word_list *list)
 	if (!list)
 		return (NO_ERROR);
 	len = count_word_list_node(list);
+	
 	cmd->argv = calloc(len + 1, sizeof(char *));
 	if (!cmd->argv)	
 		return (ERROR);
@@ -94,8 +97,8 @@ void *free_redirect_list(t_redir_list *list)
 	while (list)
 	{
 		next = list->next;
-		free(list->redir.file_name);
-		free(list->redir.heredoc_eof);
+		if (list->data.type != R_HEREDOC)
+			free(list->data.value.file_name);
 		free(list);
 		list = next;
 	}
@@ -118,48 +121,67 @@ void	*free_rword_list(t_redir_word_list *list)
 
 int error_create_redirect_list(t_simple_cmd *cmd, t_redir_word_list *rword_list)
 {
-	cmd->redir = free_redirect_list(cmd->redir);
+	cmd->redir_list = free_redirect_list(cmd->redir_list);
 	rword_list = free_rword_list(rword_list);
 	return (ERROR);
 }
 
-int	set_redirect_word(t_simple_cmd *cmd, t_redir_word_list *rword_list)
+int	set_redirect_word(t_redir_list *next_node, t_redir_word_list *rword_list)
 {
-	if (cmd->redir->redir.type != R_HEREDOC)
+	
+	if (next_node->data.type != R_HEREDOC)
 	{
-		cmd->redir->redir.file_name = strdup(rword_list->data.rword.value);
-		if (!cmd->redir->redir.file_name)
-			return (error_create_redirect_list(cmd, rword_list));
+		next_node->data.value.file_name = strdup(rword_list->data.rword.value);
+		if (!next_node->data.value.file_name)
+			return (ERROR);
 	}
-	else  if (cmd->redir->redir.type == R_HEREDOC)
-	{
-		cmd->redir->redir.heredoc_eof = strdup(rword_list->data.rword.value);
-		if (!cmd->redir->redir.heredoc_eof)
-			return (error_create_redirect_list(cmd, rword_list));
-		gather_heredoc(&cmd->redir->redir); // make tmp file, read stdin, write in, unlink tmp file set fd as the ->file name 
-	}
+	// else  if (cmd->redir->redir.type == R_HEREDOC) // word_list->data.rword.valueがEOF
+	// {
+	// 	// rword_list->data.pipe にpipefdをセット
+	// 	if (gather_heredoc(&cmd->redir->redir, rword_list->data.rword) == ERROR); // make tmp file, read stdin, write in, unlink tmp file set fd as the ->file name 
+	// 		return (error_create_redirect_list(cmd, rword_list));
+	// }
+
 	return (NO_ERROR);
 }
+
+int push_redirect_list(t_simple_cmd *cmd, t_redir_word_list *rword_list);
 
 int create_redirect_list(t_simple_cmd *cmd, t_redir_word_list *rword_list)
 {
 	t_redir_word_list	*next_word;
-	t_redir_list		*next_node;
 
 	if (!rword_list)
 		return (NO_ERROR);
 	while (rword_list)
 	{
-		next_node = cmd->redir->next;
+		
 		next_word = rword_list->next;
-		cmd->redir->redir.type = rword_list->data.type;
-		if (set_redirect_word(cmd, rword_list) != NO_ERROR)
-			return (ERROR);
-		cmd->redir = next_node;
+		if (push_redirect_list(cmd, rword_list) == ERROR)
+			return (free_redirect_list(cmd->redir_list), ERROR);
 		free(rword_list->data.rword.value);
 		free(rword_list);
 		rword_list = next_word;
 	}
+	return (NO_ERROR);
+}
+
+int push_redirect_list(t_simple_cmd *cmd, t_redir_word_list *rword_list)
+{
+	t_redir_list	*next_node;
+
+	next_node = malloc(sizeof(t_redir_list));
+	if (!next_node)
+		return (ERROR);
+	next_node->data.type = rword_list->data.type;
+	next_node->next = NULL;
+	if (set_redirect_word(next_node, rword_list) != NO_ERROR)
+		return (free_redirect_list(cmd->redir_list), ERROR);
+	next_node->next = NULL;
+	if (!cmd->redir_list)
+		cmd->redir_list = next_node;
+	else
+		cmd->redir_list->next = next_node;
 	return (NO_ERROR);
 }
 
@@ -169,15 +191,18 @@ int create_command(t_simple_cmd *cmd, t_element element)
 	int result;
 
 	cmd->argv = NULL;
-	cmd->redir = NULL;
+	cmd->redir_list = NULL;
+	
+	
 	result = create_argv(cmd, element.word_list);
 	if (result != NO_ERROR)
 		return (ERROR);
 	result = create_redirect_list(cmd, element.rword_list);
 	if (result != NO_ERROR)
 	{
-		cmd->argv = free_2darr(cmd->argv); 
+		cmd->argv = (char **)free_2darr((void **)cmd->argv); 
 		return (ERROR);
 	}
+
 	return (NO_ERROR);
 }
