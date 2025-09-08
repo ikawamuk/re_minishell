@@ -6,7 +6,7 @@
 /*   By: ikawamuk <ikawamuk@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/01 14:43:54 by ikawamuk          #+#    #+#             */
-/*   Updated: 2025/09/08 15:18:51 by ikawamuk         ###   ########.fr       */
+/*   Updated: 2025/09/08 22:20:18 by ikawamuk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,18 +23,20 @@ int				skip_quoted_part(char quote, char *str, size_t *ip);
 t_token_type	get_special_token(char **token_value, char *str, size_t *ip);
 int				get_word(char **token_value, char *str, size_t *ip);
 
+#include <stdio.h>
 t_token_type	lex(char **token_value, char *str, size_t *ip)
 {
 	*token_value = NULL;
 	while (str[*ip] && is_space(str[*ip]))
-	{
-		if ((*ip))
-			continue;	
-		if (is_metachar(str[*ip]))
-			return(get_special_token(token_value, str, ip));
-		return (get_word(token_value, str, ip));
-	}
-	return (T_NULL);
+		(*ip)++;
+	if (!str[*ip])
+		return (T_NULL);	
+	if (is_metachar(str[*ip]))
+		return(get_special_token(token_value, str, ip));
+	if (get_word(token_value, str, ip) != NO_ERROR)
+		return (T_ERROR);
+	// printf("return T_WORD\n");
+	return (T_WORD);
 }
 
 // static bool	is_redirect(t_token_type type)

@@ -6,7 +6,7 @@
 /*   By: ikawamuk <ikawamuk@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/05 21:24:43 by ikawamuk          #+#    #+#             */
-/*   Updated: 2025/09/08 15:39:03 by ikawamuk         ###   ########.fr       */
+/*   Updated: 2025/09/08 22:21:18 by ikawamuk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,6 +33,8 @@ int	parse(t_element_list **element_list, char *str)
 		result = get_element(&element, &info);
 		if (result == ERROR)
 			return (free_element(element), ERROR);
+		// if (element.word_list)
+		// 	printf("HERE\n");
 		// printf("top word of element: %s\n", element.word_list->data.value);
 		result = push_element(element_list, element);
 		// printf("top word of top of list: %s\n", (*element_list)->data.word_list->data.value);
@@ -80,11 +82,12 @@ int	get_element(t_element *element, t_parse_info *info)
 	while (1)
 	{
 		result = get_node(&node, info);
+		// printf("node: %s\n", node.data.word.value);
 		if (result == ERROR)
 			return (free_element_node(node), ERROR);
 		if (result == CMD_FINISH)
 			break ;
-		// printf("node: %s\n", node.data.rword.word.value);
+		
 		if (node.type == WORD_NODE)
 			result = push_word_list(&element->word_list, node.data.word);
 		else if (node.type == RWORD_NODE)
@@ -116,11 +119,12 @@ int get_node(t_element_node *node, t_parse_info *info)
 
 	memset(node, 0, sizeof(*node)); //こう？
 	result = get_valid_token(&token, info);
+	// printf("valid token: %s\n", token.word.value);
 	if (result == ERROR)
 		return (free_token(token), ERROR);
 	if (result == CMD_FINISH)
 		return (CMD_FINISH);
-	// printf("valid token: %s\n", token.word.value);
+
 	convert_token_to_node(node, token);
 	return (NO_ERROR);
 }
@@ -140,6 +144,7 @@ int	get_valid_token(t_token *valid_token, t_parse_info *info)
 		return (ERROR);
 	memset(valid_token, 0, sizeof(*valid_token));
 	result = vaidated_lex(&tmp_token, info);
+	// printf("HERE: %s\n",tmp_token.word.value);
 	if (result == ERROR)
 		return (free_token(tmp_token), ERROR);
 	if (is_command_terminator(tmp_token.type))
@@ -176,29 +181,31 @@ int	vaidated_lex(t_token *token, t_parse_info *info)
 		return (ERROR);
 	memset(token, 0, sizeof(*token));
 	token->type = lex(&token->word.value, info->str, &info->str_i);
+	
 	if (!is_valid_token_sequence(token->type, info))
 		return (ERROR);
 	info->prev_token = token->type;
+	
 	return (NO_ERROR);
 }
 
 bool is_valid_token_sequence(t_token_type token_type, t_parse_info *info)
 {
 	if (T_ERROR == token_type)
-		return (ERROR);
+		return (false);
 	if (is_command_terminator(token_type))
 	{
 		if (info->prev_token != T_WORD)
-			return (ERROR);
+			return (false);
 		info->prev_token = token_type;
 	}
 	else if (is_redirect_operator(token_type))
 	{
 		if (is_command_connector(info->prev_token) || is_redirect_operator(info->prev_token))
-			return (ERROR);
+			return (false);
 		info->prev_token = token_type;
 	}
-	return (NO_ERROR);
+	return (true);
 }
 
 void convert_token_to_node(t_element_node *node, t_token token)

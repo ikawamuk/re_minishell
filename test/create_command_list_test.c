@@ -73,7 +73,7 @@ int main(int ac, char *av[])
 			free(cmd.argv[i]);
 		}
 		free(cmd.argv);
-		t_redir_list *next = cmd.redir_list->next;
+		t_redir_list *next = NULL;
 		for (; cmd.redir_list; cmd.redir_list = next)
 		{
 			next = cmd.redir_list->next;
