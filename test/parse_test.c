@@ -31,8 +31,8 @@ int main(int ac, char *av[])
 		t_redir_word_list	*tmp_r;
 		while (list->data.rword_list)
 		{
-			printf("redir word[%d]: %s\n", i, list->data.rword_list->data.word.value);
-			free(list->data.rword_list->data.word.value);
+			printf("redir word[%d]: %s\n", i, list->data.rword_list->data.rword.value);
+			free(list->data.rword_list->data.rword.value);
 			tmp_r = list->data.rword_list;
 			list->data.rword_list = list->data.rword_list->next;
 			free(tmp_r);
