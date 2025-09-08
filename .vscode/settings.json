@@ -1,6 +1,10 @@
 {
 	"files.associations": {
 		"command.h": "c",
-		"redirection.h": "c"
+		"redirection.h": "c",
+		"stdio.h": "c",
+		"parse.h": "c",
+		"token.h": "c",
+		"config.h": "c"
 	}
 }

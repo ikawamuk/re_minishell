@@ -6,7 +6,7 @@
 /*   By: ikawamuk <ikawamuk@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/05 21:24:43 by ikawamuk          #+#    #+#             */
-/*   Updated: 2025/09/08 22:21:18 by ikawamuk         ###   ########.fr       */
+/*   Updated: 2025/09/08 23:11:32 by ikawamuk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,8 +33,6 @@ int	parse(t_element_list **element_list, char *str)
 		result = get_element(&element, &info);
 		if (result == ERROR)
 			return (free_element(element), ERROR);
-		// if (element.word_list)
-		// 	printf("HERE\n");
 		// printf("top word of element: %s\n", element.word_list->data.value);
 		result = push_element(element_list, element);
 		// printf("top word of top of list: %s\n", (*element_list)->data.word_list->data.value);
@@ -124,7 +122,6 @@ int get_node(t_element_node *node, t_parse_info *info)
 		return (free_token(token), ERROR);
 	if (result == CMD_FINISH)
 		return (CMD_FINISH);
-
 	convert_token_to_node(node, token);
 	return (NO_ERROR);
 }
@@ -144,7 +141,6 @@ int	get_valid_token(t_token *valid_token, t_parse_info *info)
 		return (ERROR);
 	memset(valid_token, 0, sizeof(*valid_token));
 	result = vaidated_lex(&tmp_token, info);
-	// printf("HERE: %s\n",tmp_token.word.value);
 	if (result == ERROR)
 		return (free_token(tmp_token), ERROR);
 	if (is_command_terminator(tmp_token.type))
