@@ -68,13 +68,20 @@ int main(int ac, char *av[])
 		next_cmd = cmd_list->next;
 		t_simple_cmd cmd = cmd_list->cmd;
 		for (int i = 0; cmd.argv[i]; i++)
+		{
 			printf("argv[%d]: %s\n", i, cmd.argv[i]);
+			free(cmd.argv[i]);
+		}
+		free(cmd.argv);
 		t_redir_list *next = cmd.redir_list->next;
 		for (; cmd.redir_list; cmd.redir_list = next)
 		{
 			next = cmd.redir_list->next;
 			printf("redir: type: %d file: %s\n", cmd.redir_list->data.type, cmd.redir_list->data.value.file_name);
+			free(cmd.redir_list->data.value.file_name);
+			free(cmd.redir_list);
 		}
+		free(cmd_list);
 		cmd_list = next_cmd;
 	}
 	return (0);
