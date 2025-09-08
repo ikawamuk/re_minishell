@@ -6,7 +6,7 @@
 /*   By: ikawamuk <ikawamuk@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/30 02:25:41 by ikawamuk          #+#    #+#             */
-/*   Updated: 2025/09/08 17:40:25 by ikawamuk         ###   ########.fr       */
+/*   Updated: 2025/09/08 18:33:32 by ikawamuk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -99,6 +99,8 @@ int create_command(t_simple_cmd *cmd, t_element element)
 	return (NO_ERROR);
 }
 
+int	set_redirect_word(t_simple_cmd *cmd, t_redir_word_list *rword_list);
+
 int create_redirect_list(t_simple_cmd *cmd, t_redir_word_list *rword_list)
 {
 	t_redir_word_list	*next_word;
@@ -110,13 +112,31 @@ int create_redirect_list(t_simple_cmd *cmd, t_redir_word_list *rword_list)
 	{
 		next_node = cmd->redir->next;
 		next_word = rword_list->next;
-		cmd->redir->redir.file_name = strdup(rword_list->data.rword.value);
-		if (!cmd->redir->redir.file_name)
-			return (error_create_redirect_list(cmd, rword_list));
+		cmd->redir->redir.type = rword_list->data.type;
+		if (set_redirect_word(cmd, rword_list) != NO_ERROR)
+			return (ERROR);
 		cmd->redir = next_node;
 		free(rword_list->data.rword.value);
 		free(rword_list);
 		rword_list = next_word;
+	}
+	return (NO_ERROR);
+}
+
+int	set_redirect_word(t_simple_cmd *cmd, t_redir_word_list *rword_list)
+{
+	if (cmd->redir->redir.type != R_HEREDOC)
+	{
+		cmd->redir->redir.file_name = strdup(rword_list->data.rword.value);
+		if (!cmd->redir->redir.file_name)
+			return (error_create_redirect_list(cmd, rword_list));
+	}
+	else  if (cmd->redir->redir.type == R_HEREDOC)
+	{
+		cmd->redir->redir.heredoc_eof = strdup(rword_list->data.rword.value);
+		if (!cmd->redir->redir.heredoc_eof)
+			return (error_create_redirect_list(cmd, rword_list));
+		gather_heredoc(&cmd->redir->redir); // make tmp file, read stdin, write in, unlink tmp file set fd as the ->file name 
 	}
 	return (NO_ERROR);
 }

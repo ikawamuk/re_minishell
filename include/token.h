@@ -6,7 +6,7 @@
 /*   By: ikawamuk <ikawamuk@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/02 21:22:16 by ikawamuk          #+#    #+#             */
-/*   Updated: 2025/09/06 16:14:32 by ikawamuk         ###   ########.fr       */
+/*   Updated: 2025/09/08 18:28:01 by ikawamuk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,7 +51,7 @@ struct s_word_list
 typedef struct s_redir_word
 {
 	enum e_redir_type	type;
-	t_word				rword;	
+	t_word				rword;
 }	t_redir_word;
 
 struct s_redir_word_list
