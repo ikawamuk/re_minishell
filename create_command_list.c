@@ -6,7 +6,7 @@
 /*   By: ikawamuk <ikawamuk@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/08 18:05:41 by ikawamuk          #+#    #+#             */
-/*   Updated: 2025/09/09 19:32:26 by ikawamuk         ###   ########.fr       */
+/*   Updated: 2025/09/09 19:36:50 by ikawamuk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -181,7 +181,6 @@ int push_redirect_list(t_simple_cmd *cmd, t_redir new_data)
 		return (ERROR);
 	node->next = NULL;
 	node->data.type = new_data.type;
-	printf("type: %d\n", node->data.type);
 	node->data.value = new_data.value;
 	if (!cmd->redir_list)
 		cmd->redir_list = node;

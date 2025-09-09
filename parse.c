@@ -6,7 +6,7 @@
 /*   By: ikawamuk <ikawamuk@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/05 21:24:43 by ikawamuk          #+#    #+#             */
-/*   Updated: 2025/09/08 23:11:32 by ikawamuk         ###   ########.fr       */
+/*   Updated: 2025/09/09 19:40:10 by ikawamuk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -177,7 +177,6 @@ int	vaidated_lex(t_token *token, t_parse_info *info)
 		return (ERROR);
 	memset(token, 0, sizeof(*token));
 	token->type = lex(&token->word.value, info->str, &info->str_i);
-	
 	if (!is_valid_token_sequence(token->type, info))
 		return (ERROR);
 	info->prev_token = token->type;
@@ -197,7 +196,7 @@ bool is_valid_token_sequence(t_token_type token_type, t_parse_info *info)
 	}
 	else if (is_redirect_operator(token_type))
 	{
-		if (is_command_connector(info->prev_token) || is_redirect_operator(info->prev_token))
+		if (is_redirect_operator(info->prev_token))
 			return (false);
 		info->prev_token = token_type;
 	}
