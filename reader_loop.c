@@ -6,7 +6,7 @@
 /*   By: ikawamuk <ikawamuk@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/30 00:28:22 by ikawamuk          #+#    #+#             */
-/*   Updated: 2025/09/06 14:51:48 by ikawamuk         ###   ########.fr       */
+/*   Updated: 2025/09/09 19:12:39 by ikawamuk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,10 +38,10 @@ static void excute_command(t_shell *shell)
 		int i = 0;
 		while (shell->cmd_list->cmd.argv[i])
 			printf("argv[%d]: %s\n", i, shell->cmd_list->cmd.argv[i++]);
-		while (shell->cmd_list->cmd.redir)
+		while (shell->cmd_list->cmd.redir_list)
 		{
-			printf("redir: %s\n", shell->cmd_list->cmd.redir->redir.file_name);
-			shell->cmd_list->cmd.redir = shell->cmd_list->cmd.redir->next;
+			printf("redir: %s\n", shell->cmd_list->cmd.redir_list->data.value);
+			shell->cmd_list->cmd.redir_list = shell->cmd_list->cmd.redir_list->next;
 		}
 		shell->cmd_list = shell->cmd_list->next;
 	}
