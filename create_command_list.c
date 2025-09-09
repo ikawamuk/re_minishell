@@ -6,7 +6,7 @@
 /*   By: ikawamuk <ikawamuk@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/08 18:05:41 by ikawamuk          #+#    #+#             */
-/*   Updated: 2025/09/09 19:21:05 by ikawamuk         ###   ########.fr       */
+/*   Updated: 2025/09/09 19:32:26 by ikawamuk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -130,15 +130,17 @@ int error_create_redirect_list(t_simple_cmd *cmd, t_redir_word_list *rword_list)
 int	make_new_data(t_redir *new_data, t_redir_word_list *rword_list)
 {
 	new_data->type = rword_list->data.type;
+	new_data->value.file_name = NULL; //　ERROR時にfree()してもいいようにNULLにしておく。
 	if (rword_list->data.type != R_HEREDOC)
 	{
+		printf("rword_list value: %s\n", rword_list->data.rword.value);
 		new_data->value.file_name = strdup(rword_list->data.rword.value);
 		if (!new_data->value.file_name)
 			return (ERROR);
 	}
 	// else  if (cmd->redir->redir.type == R_HEREDOC) // word_list->data.rword.valueがEOF
 	// {
-	//	new_data->value.file_name = NULL; free()してもいいようにNULLにしておく。
+	
 	// 	// rword_list->data.pipe にpipefdをセット
 	// 	if (gather_heredoc(&cmd->redir->redir, rword_list->data.rword) == ERROR); // make tmp file, read stdin, write in, unlink tmp file set fd as the ->file name 
 	// 		return (error_create_redirect_list(cmd, rword_list));
@@ -179,9 +181,8 @@ int push_redirect_list(t_simple_cmd *cmd, t_redir new_data)
 		return (ERROR);
 	node->next = NULL;
 	node->data.type = new_data.type;
-	node->data.value.file_name = new_data.value.file_name;
-	if (!node->data.value.file_name)
-		return (free(node), ERROR);
+	printf("type: %d\n", node->data.type);
+	node->data.value = new_data.value;
 	if (!cmd->redir_list)
 		cmd->redir_list = node;
 	else
