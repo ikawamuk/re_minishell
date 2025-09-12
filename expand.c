@@ -6,20 +6,23 @@
 /*   By: ikawamuk <ikawamuk@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/06 06:50:55 by ikawamuk          #+#    #+#             */
-/*   Updated: 2025/09/12 15:53:07 by ikawamuk         ###   ########.fr       */
+/*   Updated: 2025/09/12 17:07:39 by ikawamuk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "parse.h"
 #include "command.h"
 
+void quote(t_element_list *element_list);
+int dequote(t_element_list *element_list);
+int split(t_element_list *element_list);
+
 int expand(t_element_list *element_list, char **envp)
 {
-	int result;
-
 	quote(element_list); // クオートマーカーセット
-	// word listの展開
-	
+	(void)envp; // word listの展開
+	if (split(element_list) == ERROR) // word list単語分割、空文字列消去
+		return (ERROR);
 		// リダイレクトの展開は実行部でやろう。
 		// redirect word listの展開
 		// redirect word listで単語分割、空文字列が発生した場合はambiguas redirectでエラー
@@ -29,36 +32,3 @@ int expand(t_element_list *element_list, char **envp)
 	return (NO_ERROR);
 }
 
-int dequote(t_element_list *element_list)
-{
-	int result;
-	t_element_list *current;
-
-	while (current)
-	{
-		result = dequote_word_list(current->data.word_list);
-		current = current->next;
-	}
-	return (NO_ERROR);
-}
-
-int dequote_word_list(t_word_list *list)
-{
-	int result;
-	t_word_list *current;
-
-	while (current)
-	{
-		result = dequote_word(&current->data);
-		if (is_quoted_null(current->data))
-			current->data.flag &= ~W_HASQUOTEDNULL; 
-		current = current->next;
-	}
-}
-
-int dequote_word(t_word *word)
-{
-	int result;
-
-	
-}

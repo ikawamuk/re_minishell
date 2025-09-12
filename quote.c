@@ -6,7 +6,7 @@
 /*   By: ikawamuk <ikawamuk@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/10 19:36:09 by ikawamuk          #+#    #+#             */
-/*   Updated: 2025/09/10 21:10:32 by ikawamuk         ###   ########.fr       */
+/*   Updated: 2025/09/12 17:09:55 by ikawamuk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,8 +14,7 @@
 #include "expand.h"
 #include <stdio.h>
 #include <stdbool.h>
-#define S_QUOTE_MARKER	(char)-1
-#define D_QUOTE_MARKER	(char)-2
+
 
 void quote(t_element_list *element_list);
 void quote_element_list(t_element_list *element_list);
