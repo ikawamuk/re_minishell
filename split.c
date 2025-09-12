@@ -6,7 +6,7 @@
 /*   By: ikawamuk <ikawamuk@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/12 15:55:10 by ikawamuk          #+#    #+#             */
-/*   Updated: 2025/09/12 17:10:37 by ikawamuk         ###   ########.fr       */
+/*   Updated: 2025/09/12 17:33:54 by ikawamuk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@
 static void	*free_word_list(t_word_list *list);
 static bool	is_quote_marker(char c);
 static bool	is_space(char c);
-bool	is_null_node(char *string);
+static bool	is_null_node(char *string);
 static bool has_next_word(char *string, size_t *start_p, size_t *index_p);
 static char *substr(char const *s, unsigned int start, size_t len);
 int split_word_list(t_word_list **word_list_p);
@@ -73,7 +73,7 @@ int get_split_word_list(t_word_list *word_list, t_word_list **result_list)
 	return (NO_ERROR);	
 }
 
-bool	is_null_node(char *string)
+static bool	is_null_node(char *string)
 {
 	while (is_space(*string))
 		string++;
