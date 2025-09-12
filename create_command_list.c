@@ -6,7 +6,7 @@
 /*   By: ikawamuk <ikawamuk@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/08 18:05:41 by ikawamuk          #+#    #+#             */
-/*   Updated: 2025/09/08 22:57:15 by ikawamuk         ###   ########.fr       */
+/*   Updated: 2025/09/09 19:36:50 by ikawamuk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -125,17 +125,22 @@ int error_create_redirect_list(t_simple_cmd *cmd, t_redir_word_list *rword_list)
 	return (ERROR);
 }
 
-int	make_new_data(t_redir *next_node, t_redir_word_list *rword_list)
+
+// いずれのタイプも
+int	make_new_data(t_redir *new_data, t_redir_word_list *rword_list)
 {
-	
+	new_data->type = rword_list->data.type;
+	new_data->value.file_name = NULL; //　ERROR時にfree()してもいいようにNULLにしておく。
 	if (rword_list->data.type != R_HEREDOC)
 	{
-		next_node->value.file_name = strdup(rword_list->data.rword.value);
-		if (!next_node->value.file_name)
+		printf("rword_list value: %s\n", rword_list->data.rword.value);
+		new_data->value.file_name = strdup(rword_list->data.rword.value);
+		if (!new_data->value.file_name)
 			return (ERROR);
 	}
 	// else  if (cmd->redir->redir.type == R_HEREDOC) // word_list->data.rword.valueがEOF
 	// {
+	
 	// 	// rword_list->data.pipe にpipefdをセット
 	// 	if (gather_heredoc(&cmd->redir->redir, rword_list->data.rword) == ERROR); // make tmp file, read stdin, write in, unlink tmp file set fd as the ->file name 
 	// 		return (error_create_redirect_list(cmd, rword_list));
@@ -155,10 +160,10 @@ int create_redirect_list(t_simple_cmd *cmd, t_redir_word_list *rword_list)
 	while (rword_list)
 	{
 		next_word = rword_list->next;
-		new_data.type = rword_list->data.type;
-		new_data.value.file_name = rword_list->data.rword.value;
-		if (push_redirect_list(cmd, new_data) == ERROR)
+		if (make_new_data(&new_data, rword_list) == ERROR)
 			return (free_redirect_list(cmd->redir_list), ERROR);
+		if (push_redirect_list(cmd, new_data) == ERROR)
+			return (free_redirect_list(cmd->redir_list), free(new_data.value.file_name), ERROR);
 		free(rword_list->data.rword.value);
 		free(rword_list);
 		rword_list = next_word;
@@ -176,9 +181,7 @@ int push_redirect_list(t_simple_cmd *cmd, t_redir new_data)
 		return (ERROR);
 	node->next = NULL;
 	node->data.type = new_data.type;
-	node->data.value.file_name = strdup(new_data.value.file_name);
-	if (!node->data.value.file_name)
-		return (free(node), ERROR);
+	node->data.value = new_data.value;
 	if (!cmd->redir_list)
 		cmd->redir_list = node;
 	else

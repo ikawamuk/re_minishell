@@ -62,7 +62,11 @@ int main(int ac, char *av[], char **envp)
 		for (; cmd.redir_list; cmd.redir_list = next)
 		{
 			next = cmd.redir_list->next;
-			printf("redir: type: %d file: %s\n", cmd.redir_list->data.type, cmd.redir_list->data.value.file_name);
+			printf("redir: type: %d ", cmd.redir_list->data.type);
+			if (cmd.redir_list->data.type != R_HEREDOC)
+				printf("file: %s\n", cmd.redir_list->data.value.file_name);
+			else
+				printf("\n");
 			free(cmd.redir_list->data.value.file_name);
 			free(cmd.redir_list);
 		}

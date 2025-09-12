@@ -5,6 +5,9 @@
 		"stdio.h": "c",
 		"parse.h": "c",
 		"token.h": "c",
-		"config.h": "c"
+		"config.h": "c",
+		"expand.h": "c",
+		"stdbool.h": "c",
+		"string.h": "c"
 	}
 }

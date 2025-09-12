@@ -6,7 +6,7 @@
 /*   By: ikawamuk <ikawamuk@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/01 15:22:38 by ikawamuk          #+#    #+#             */
-/*   Updated: 2025/09/06 14:42:42 by ikawamuk         ###   ########.fr       */
+/*   Updated: 2025/09/09 19:29:51 by ikawamuk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,10 +59,10 @@ enum e_cmd_type
 
 enum e_redir_type
 {
-	R_IN,
-	R_OUT,
-	R_HEREDOC,
-	R_APPEND
+	R_IN = T_LESS,
+	R_OUT = T_GREATER,
+	R_HEREDOC = T_LESS_LESS,
+	R_APPEND = T_GREATER_GREATER
 };
 
 enum e_conection
