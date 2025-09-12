@@ -6,13 +6,8 @@
 /*   By: ikawamuk <ikawamuk@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/10 21:32:23 by ikawamuk          #+#    #+#             */
-/*   Updated: 2025/09/10 21:33:41 by ikawamuk         ###   ########.fr       */
+/*   Updated: 2025/09/12 15:52:31 by ikawamuk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "parse.h"
-
-int word_list_split(t_element_list *element_list)
-{
-
-}

@@ -6,7 +6,7 @@
 /*   By: ikawamuk <ikawamuk@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/06 06:50:55 by ikawamuk          #+#    #+#             */
-/*   Updated: 2025/09/10 21:42:23 by ikawamuk         ###   ########.fr       */
+/*   Updated: 2025/09/12 15:53:07 by ikawamuk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ int expand(t_element_list *element_list, char **envp)
 
 	quote(element_list); // クオートマーカーセット
 	// word listの展開
-	// word listの単語分割、空文字列削除
+	
 		// リダイレクトの展開は実行部でやろう。
 		// redirect word listの展開
 		// redirect word listで単語分割、空文字列が発生した場合はambiguas redirectでエラー
